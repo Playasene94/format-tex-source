@@ -1,0 +1,34 @@
+var doc = editor.text();   // get entire document text as string
+var lines = doc.split("\n");
+
+var indentLevel = 0;
+var formatted = [];
+
+for(var i=0; i < lines.length; i++) {
+    var line = lines[i].trim();
+
+    if (line.match(/^\\end\{.*\}/)) {
+        indentLevel = Math.max(indentLevel - 1, 0);
+    }
+
+    var indent = "";
+    for(var j=0; j<indentLevel; j++) {
+        indent += "    ";
+    }
+
+    if (line.match(/^\\begin\{.*\}/)) {
+        formatted.push(indent + line);
+        indentLevel++;
+        continue;
+    }
+
+    if (line.match(/^\\item/)) {
+        formatted.push(indent + "    " + line);
+        continue;
+    }
+
+    formatted.push(indent + line);
+}
+
+var formattedText = formatted.join("\n");
+editor.setText(formattedText);
